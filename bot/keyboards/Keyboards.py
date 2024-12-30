@@ -1,14 +1,16 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
 # Инлайн-клавиатура для первой страницы
 async def first_page_kb():
-    kb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='💲 Прайс-лист', callback_data='start|price_list')],
-    [InlineKeyboardButton(text='ℹ️ О нас', callback_data='start|about_us')],
-    [InlineKeyboardButton(text='📱 Наши соц.сети', callback_data='start|our_socials')]])
+    kb = [
+        [KeyboardButton(text="💲 Прайс-лист")],
+        [KeyboardButton(text="ℹ️ О нас")],
+        [KeyboardButton(text="📱 Наши соц.сети")]
+    ]
+    keyboard = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
 
-    return kb
+    return keyboard
 
 
 # Инлайн-клавиатура для прайс-листа
@@ -30,14 +32,10 @@ async def price_list_kb():
 
 
 # Инлайн-клавиатура для возврата в стартовое меню
-async def back_to_start_menu_kb():
-    kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='◀️ Назад', callback_data='back_start_menu')]])
+async def back_kb():
+    kb = [
+        [KeyboardButton(text="◀️ Назад")],
+    ]
+    keyboard = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
 
-    return kb
-
-
-# Инлайн-клавиатура для возврата в меню прайс-листа
-async def back_to_price_list_kb():
-    kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='◀️ Назад', callback_data='start|price_list')]])
-
-    return kb
+    return keyboard
