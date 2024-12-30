@@ -9,9 +9,11 @@ from states.User import UserStates
 
 
 # Отправка стартового меню при вводе "/start"
-async def start(message: types.Message):
+async def start(message: types.Message, state: FSMContext):
     await message.answer(texts.start_text, 
     reply_markup=await Keyboards.first_page_kb())
+
+    await state.clear()
 
 
 # Отправка стартового меню при нажатии кнопки "Назад"
@@ -20,9 +22,10 @@ async def back(call: types.CallbackQuery,  state: FSMContext):
     message_id = call.message.message_id
     data = await state.get_data()
 
-    await bot.delete_message(user_id, message_id)
-    if "message_to_delete_id" in data:
+    try:
+        await bot.delete_message(user_id, message_id)
         await bot.delete_message(user_id, data["message_to_delete_id"])
+    except: pass
 
     await call.message.answer(texts.start_text, 
     reply_markup=await Keyboards.first_page_kb())
