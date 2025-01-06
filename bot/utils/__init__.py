@@ -1,1 +1,1 @@
-from utils import texts
+from utils import userTexts, globalTexts, adminTexts

@@ -35,17 +35,34 @@ class AsyncORM:
     # Метод для заполнения таблицы прайс-листа значениями по-умолчанию
     @staticmethod
     async def fill_priceListTable_with_defaultValues():
-        for name, text in price_list_texts.items():
+        for name, info in price_list_texts.items():
 
             priceList_item = await AsyncORM.get_priceList_item_by_name(name)
             
             if not priceList_item:
-                priceList_item = PriceListItemsOrm(name=name, info_text=text)
+                priceList_item = PriceListItemsOrm(name=name, info_text=info["text"], photo_file_ids=[])
 
                 async with async_session() as session:
                     session.add(priceList_item)
 
                     await session.commit() 
 
+        return True
+    
+
+    # Изменение информации о пункте в блоке "Прайс-лист"
+    @staticmethod
+    async def change_priceList_item_info(name: str, info_text: str,
+        photo_file_ids: list[str] = []) -> bool:
+
+        async with async_session() as session:
+            result = await session.execute(select(PriceListItemsOrm).where(PriceListItemsOrm.name == name))
+            priceList_item: PriceListItemsOrm = result.scalar()
+
+            priceList_item.info_text = info_text
+            priceList_item.photo_file_ids = photo_file_ids
+
+            await session.commit()
+                
         return True
     '''/PriceListItemsOrm/'''    

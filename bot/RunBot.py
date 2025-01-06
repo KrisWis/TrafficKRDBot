@@ -3,7 +3,8 @@ from InstanceBot import bot, dp
 import handlers
 import asyncio
 import logging
-from database.orm import AsyncORM
+# from database.orm import AsyncORM
+from middlewares import MediaGroupMiddleware
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='Logs.log', level=logging.INFO)
@@ -22,10 +23,13 @@ async def on_startup() -> None:
     await bot.set_my_commands(commands)
 
     handlers.hand_start.hand_add()
+    handlers.hand_admin.hand_add()
     
     bot_info = await bot.get_me()
 
     logging.basicConfig(level=logging.INFO)
+
+    dp.message.middleware(MediaGroupMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
 
