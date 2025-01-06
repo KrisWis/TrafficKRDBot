@@ -16,7 +16,7 @@ async def first_page_kb():
 # Инлайн-клавиатура для прайс-листа
 async def price_list_kb():
     kb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='📱 Развитие социальных сетей', callback_data='price_list|socials_develop')],
+    [InlineKeyboardButton(text='📱 Комплексное развитие социальных сетей', callback_data='price_list|socials_develop')],
     [InlineKeyboardButton(text='📊 Свежий маркетинг', callback_data='price_list|fresh_marketing')],
     [InlineKeyboardButton(text='🌐 Продающие сайты', callback_data='price_list|good_websites')],
     [InlineKeyboardButton(text='🤖 Гибкие боты', callback_data='price_list|flex_bots')],
