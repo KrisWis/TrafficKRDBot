@@ -3,11 +3,16 @@ from InstanceBot import bot, dp
 import handlers
 import asyncio
 import logging
+from database.orm import AsyncORM
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='Logs.log', level=logging.INFO)
 
 async def on_startup() -> None:
+
+    # DEV: Пересоздаём таблицы в базе данных и заполняем значениями по-умолчанию.
+    # await AsyncORM.create_tables()
+    # await AsyncORM.fill_priceListTable_with_defaultValues()
 
     # Определяем команды и добавляем их в бота
     commands = [

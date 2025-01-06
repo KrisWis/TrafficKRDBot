@@ -6,6 +6,7 @@ from keyboards import Keyboards
 from InstanceBot import bot
 from aiogram.fsm.context import FSMContext
 from states.User import UserStates
+from database.orm import AsyncORM
 
 
 # Отправка стартового меню при вводе "/start"
@@ -57,35 +58,38 @@ async def message_handler(message: types.Message, state: FSMContext):
             reply_markup=await Keyboards.first_page_kb())
 
     else:
-        message_to_delete = await message.answer(first_page_texts[text_key], 
-        reply_markup=await Keyboards.price_list_kb() 
-        if text_key == "💲 Прайс-лист" else await Keyboards.back_kb())
+
+        if text_key == "ℹ️ О нас":
+
+            about_us_gif_id = "CgACAgIAAxkBAAIB3Wd7-9WLlC0sqQnIZ8G3cEds7RfpAAIrZwACv73gS5nfE8-wA5clNgQ"
+
+            message_to_delete = await message.answer_animation(
+            animation=about_us_gif_id,
+            caption=first_page_texts[text_key], 
+            reply_markup=await Keyboards.back_kb())
+        else:
+            message_to_delete = await message.answer(first_page_texts[text_key], 
+            reply_markup=await Keyboards.price_list_kb() 
+            if text_key == "💲 Прайс-лист" else await Keyboards.back_kb(), disable_web_page_preview=True)
 
         await state.update_data(message_to_delete_id=message_to_delete.message_id)
 
 
 # Отправка сообщения по нажатию кнопок в прайс-листе
-price_list_texts = {
-    "socials_develop": texts.socials_develop_text, 
-    "fresh_marketing": texts.fresh_marketing_text, 
-    "good_websites": texts.good_websites_text, 
-    "flex_bots": texts.flex_bots_text, 
-    "design_and_creative": texts.design_and_creative_text, 
-    "billboards_and_banners": texts.billboards_and_banners_text, 
-    "traffic_tide": texts.traffic_tide_text, 
-    "analytics_and_campaign": texts.analytics_and_campaign_text, 
-    "meetings_and_shoots": texts.meetings_and_shoots_text, 
-    "studying_and_personnel": texts.studying_and_personnel_text, 
-}
-
 async def onClick_price_list_buttons(call: types.CallbackQuery, state: FSMContext):
-    text_key = call.data.split("|")[1]
+    price_list_item_name = call.data.split("|")[1]
     user_id = call.from_user.id
     message_id = call.message.message_id
 
     await bot.delete_message(user_id, message_id)
 
-    message_to_delete = await call.message.answer(price_list_texts[text_key], 
+    price_list_item = await AsyncORM.get_priceList_item_by_name(price_list_item_name)
+
+    if not price_list_item: 
+        await call.message.answer(texts.data_notFound_text)
+        return
+
+    message_to_delete = await call.message.answer(price_list_item.info_text, 
     reply_markup=await Keyboards.back_kb())
 
     await state.update_data(message_to_delete_id=message_to_delete.message_id)
