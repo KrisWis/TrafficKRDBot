@@ -1,7 +1,7 @@
 from aiogram import types
 from InstanceBot import router
 from aiogram.filters import Command, StateFilter
-from utils import adminTexts
+from utils import adminTexts, globalTexts
 from keyboards import adminKeyboards
 from aiogram.fsm.context import FSMContext
 from database.orm import AsyncORM
@@ -10,13 +10,19 @@ from states.Admin import AdminStates
 from helpers import albumInfoProcess, sendPriceListItemInfo, deleteCallMessage
 from database.defaultValues import price_list_texts
 from RunBot import logger
+from Config import admins
 
 
 '''Глобальные хендлеры для админ-меню'''
 # Отправка админ-меню при вводе "/admin"
 async def admin(message: types.Message, state: FSMContext):
-    await message.answer(adminTexts.admin_start_text, 
-    reply_markup=await adminKeyboards.admin_menu_kb())
+    user_id = message.from_user.id
+
+    if user_id in admins:
+        await message.answer(adminTexts.admin_start_text, 
+        reply_markup=await adminKeyboards.admin_menu_kb())
+    else:
+        await message.answer(globalTexts.rightsError_text)
 
     await state.clear()
 
