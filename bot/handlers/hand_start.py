@@ -43,8 +43,10 @@ async def reply_handler(message: types.Message, state: FSMContext):
     message_id = message.message_id
     text_key = message.text
 
-    await bot.delete_message(user_id, message_id - 1)
-    await bot.delete_message(user_id, message_id)
+    try:
+        await bot.delete_message(user_id, message_id - 1)
+        await bot.delete_message(user_id, message_id)
+    except: pass
 
     data = await state.get_data()
 
